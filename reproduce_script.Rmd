@@ -1,0 +1,6 @@
+---
+title: GGM compare
+author: Donald R. Williams
+date: September 09, 2020
+output: html_document
+---
