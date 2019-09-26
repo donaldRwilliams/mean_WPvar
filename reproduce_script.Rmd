@@ -4,3 +4,402 @@ author: Donald R. Williams
 date: September 09, 2020
 output: html_document
 ---
+
+```{r}
+library(hypMuVar)
+library(ggplot2)
+library(cowplot)
+library(dplyr)
+windowsFonts(Times = windowsFont("Times New Roman"))
+```
+
+# Priors plot (SD): samples from prior
+```{r}
+dat_plot_20 <- hypSD(a0_spike = 1, a1_spike = 20, 
+                     a0_slab = 4, a1_slab = 10, 
+                     pi = 0.5, iter = 100000)
+
+dat_plot_50 <- hypSD(a0_spike = 1, a1_spike = 50, 
+                     a0_slab = 5, a1_slab = 10, 
+                     pi = 0.5, iter = 100000)
+
+dat_plot_100 <- hypSD(a0_spike = 1, a1_spike = 100, 
+                     a0_slab = 6, a1_slab = 10, 
+                     pi = 0.5, iter = 100000)
+
+
+```
+
+
+Priors plot (SD): Legend
+```{r}
+leg <- ggplot(dat_plot_50, aes(x = RE_sd, 
+              fill = factor(Indicator), 
+              group = factor(Indicator)))  +
+  theme_bw(base_family = "Times", 
+           base_size = 12) +
+  geom_density(alpha = 0.5, adjust = 2.5,
+                position = "identity") + 
+  coord_cartesian(ylim=c(0, 3)) +
+  theme(legend.position = "top",  
+        strip.text = element_text(size = 10), 
+        panel.grid = element_blank()) +
+  scale_fill_manual(name = "Component", 
+                    values = c("#CC79A7", 
+                               "#0072B2"), 
+                    breaks = c("1", "2"),
+                    labels = c("Null", "Positive")) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_x_continuous(expand = c(0, 0), 
+                     limits = c(0,1.5)) +
+  xlab(expression("Random Effects SD ("*sigma[1]*")")) +
+  ylab("Denisty")
+leg <- get_legend(leg)
+```
+
+# Priors plot (SD): top left
+```{r}
+dat_plot_20$facet <- "A"
+dat_plot_20$facet <- factor(dat_plot_20$facet, 
+                            levels = "A", 
+                            labels =  expression("("*italic(paste("a"))[0]^italic(spike)*"= 1,"* 
+                                                   italic(paste(" a"))[1]^italic(spike)*"= 20) "*  
+                                                   "("*italic(paste("a"))[0]^italic(slab)*"= 4, "* 
+                                                   italic(paste(" a"))[1]^italic(slab)*"= 10)"))
+plot_1A1 <- ggplot(dat_plot_20, aes(x = RE_sd, 
+                                   fill = factor(Indicator), 
+                                   group = factor(Indicator)))  +
+  facet_grid(~ facet, 
+             labeller = label_parsed) +
+  theme_bw(base_family = "Times", 
+           base_size = 12) +
+  geom_density(alpha = 0.5, 
+               adjust = 2.5,
+               position = "identity") + 
+  coord_cartesian(ylim=c(0, 3)) +
+  theme(legend.position = "none", 
+        panel.grid = element_blank(), 
+        strip.text = element_text(size = 9), 
+        strip.background = element_rect(fill = "grey95")) +
+  scale_fill_manual(name = "Component", 
+                    values = c("#CC79A7", 
+                               "#0072B2"), 
+                    breaks = c("1", "2"),
+                    labels = c("Spike", "Slab")) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_x_continuous(expand = c(0, 0), 
+                     limits = c(0,1.5)) +
+  ylab("Denisty") +
+  xlab("")
+```
+
+# Priors plot (SD): middle
+```{r}
+dat_plot_50$facet <- "B"
+dat_plot_50$facet <- factor(dat_plot_50$facet, 
+                            levels = "B", 
+                            labels =  expression("("*italic(paste("a"))[0]^italic(spike)*"= 1,"* 
+                                                 italic(paste(" a"))[1]^italic(spike)*"= 50) "*  
+                                                   "("*italic(paste("a"))[0]^italic(slab)*"= 5, "* 
+                                                   italic(paste(" a"))[1]^italic(slab)*"= 10)"))
+
+plot_1A2 <- ggplot(dat_plot_50, aes(x = RE_sd, 
+                     fill = factor(Indicator), 
+                     group = factor(Indicator)))  +
+  facet_grid(~ facet, 
+             labeller = label_parsed) +
+  theme_bw(base_family = "Times", 
+           base_size = 12) +
+  geom_density(alpha = 0.5, 
+               adjust = 2.5,
+               position = "identity") + 
+  coord_cartesian(ylim=c(0, 3)) +
+  theme(legend.position = "none", 
+        panel.grid = element_blank(), 
+        strip.text = element_text(size = 9), 
+        strip.background = element_rect(fill = "grey95")) +
+  scale_fill_manual(name = "Component", 
+                    values = c("#CC79A7", 
+                               "#0072B2"), 
+                    breaks = c("1", "2"),
+                    labels = c("Spike", "Slab")) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_x_continuous(expand = c(0, 0), 
+                     limits = c(0,1.5)) +
+  xlab(expression("Mixture Prior Distribution ("*sigma[1]*")")) +
+  ylab("")
+```
+
+# Priors plot (SD): right
+```{r}
+dat_plot_100$facet <- "C"
+dat_plot_100$facet <- factor(dat_plot_100$facet, 
+                            levels = "C", 
+                            labels =  expression("("*italic(paste("a"))[0]^italic(spike)*"= 1,"* 
+                                                   italic(paste(" a"))[1]^italic(spike)*"= 100) "*
+                                                   "("*italic(paste("a"))[0]^italic(slab)*"= 4, "* 
+                                                   italic(paste(" a"))[1]^italic(slab)*"= 10)"))
+
+plot_1A3 <- ggplot(dat_plot_100, aes(x = RE_sd, 
+                                   fill = factor(Indicator), 
+                                   group = factor(Indicator)))  +
+  facet_grid(~ facet, 
+             labeller = label_parsed) +
+  theme_bw(base_family = "Times", 
+           base_size = 12) +
+  geom_density(alpha = 0.5, 
+               adjust = 2.5,
+               position = "identity") + 
+  coord_cartesian(ylim=c(0, 3)) +
+  theme(legend.position = "none", 
+        panel.grid = element_blank(), 
+        strip.text = element_text(size = 9),
+        strip.background = element_rect(fill = "grey95")) +
+  scale_fill_manual(name = "Component", 
+                    values = c("#CC79A7", 
+                               "#0072B2"), 
+                    breaks = c("1", "2"),
+                    labels = c("Spike", "Slab")) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_x_continuous(expand = c(0, 0), 
+                     limits = c(0,1.5)) +
+  ylab("") +
+  xlab("")
+```
+
+# Priors plot (SD): all
+```{r}
+# combine
+plot_1A <- plot_grid(plot_1A1, 
+                     plot_1A2, 
+                     plot_1A3, 
+                     nrow = 1)
+# add legend
+plot_1A <- plot_grid("", leg, plot_1A, 
+                     nrow = 3, 
+                     rel_heights = c(.05, 1, 10))
+```
+
+# Priors plot (rho): left
+```{r}
+# sigma = 0.35; c_rho = 10
+plot_sigma_35 <- hyp_rho(sigma_rho = 0.35, 
+                         c_rho = 10, 
+                         iter = 100000)
+
+# remove "spike"
+temp <- plot_sigma_35 %>% 
+        filter(k != 1)
+
+# "spike"
+temp2 <- plot_sigma_35 %>% 
+         filter(k == 1)
+
+# dummy for facet
+temp2$facet <- "a"
+
+# expression for facet
+temp2$facet <- factor(temp2$facet ,
+                      levels = "a", 
+                      labels = expression("("*sigma[rho]*"= 0.35,"*italic(paste("  c"))[rho]*"= 10)"  ))
+
+# dummy plot: density
+p <- ggplot(temp, aes(r)) + 
+     geom_density()
+# density
+d <- ggplot_build(p)$data[[1]]
+
+plot_1B1 <- ggplot(temp2, aes(x = r)) +
+  facet_grid(~ facet, 
+             labeller = label_parsed) +
+  geom_density(fill = "#999999", 
+               alpha = 0.5) +
+  geom_area(inherit.aes = FALSE, 
+            data = subset(d, x > -0.001), 
+            aes(x=x, y=y), 
+            fill="#56B4E9", 
+            alpha = 0.5) +
+  geom_area(inherit.aes = FALSE, 
+            data = subset(d, x < .001), 
+            aes(x=x, y=y), 
+            fill="#009E73", 
+            alpha = 0.5) +
+  geom_density(inherit.aes = FALSE, 
+               data = temp, 
+               aes( x =r)) +
+  coord_cartesian(ylim=c(0, 3)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_x_continuous(expand = c(0, 0), 
+                     limits = c(-1, 1),
+                     breaks = c(-1, -0.5, 0, 0.5, 1), 
+                     labels = c(-1, -0.5, 0, 0.5, 1)) +
+  theme_bw(base_family = "Times", 
+           base_size = 12) +
+  theme(legend.position = "none", 
+        panel.grid = element_blank(), 
+        strip.text = element_text(size = 9), 
+        strip.background = element_rect(fill = "grey95")) +
+  xlab("") +
+  ylab("Density")
+```
+
+# Priors plot (rho): center
+```{r}
+# simga = 0.5; c_rho = 25
+plot_sigma_5 <- hyp_rho(sigma_rho = 0.5, 
+                        c_rho = 25, 
+                        iter = 100000)
+
+# remove "spike"
+temp  <- plot_sigma_5 %>% 
+         filter(k != 1)
+
+# spike
+temp2 <- plot_sigma_5 %>% 
+         filter(k == 1)
+
+# dummay factor
+temp2$facet <- "a"
+
+# expression for facet
+temp2$facet <- factor(temp2$facet ,
+                      levels = "a", 
+                      labels = expression("("*sigma[rho]*"= 0.5,"*
+                                            italic(paste("  c"))[rho]*"= 25)"))
+# dummy plot: density
+p <- ggplot(temp, aes(r)) + 
+     geom_density()
+# density
+d <- ggplot_build(p)$data[[1]]
+
+plot_1B2 <- ggplot(temp2, aes(x = r)) +
+  facet_grid(~ facet, labeller = label_parsed) +
+  geom_density(fill = "#999999", alpha = 0.5) +
+  geom_area(inherit.aes = FALSE, 
+            data = subset(d, x > -0.001), 
+            aes(x=x, y=y), 
+            fill="#56B4E9", 
+            alpha = 0.5) +
+  geom_area(inherit.aes = FALSE, 
+            data = subset(d, x < .001), 
+            aes(x=x, y=y), fill="#009E73", 
+            alpha = 0.5) +
+  geom_density(inherit.aes = FALSE, 
+               data = temp, 
+               aes( x =r)) +
+  coord_cartesian(ylim=c(0, 3)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_x_continuous(expand = c(0, 0), 
+                     limits = c(-1, 1),
+                     breaks = c(-1, -0.5, 0, 0.5, 1), 
+                     labels = c(-1, -0.5, 0, 0.5, 1)) +
+  theme_bw(base_family = "Times", base_size = 12) +
+  theme(legend.position = "none", 
+        panel.grid = element_blank(), 
+        strip.text = element_text(size = 9), 
+        strip.background = element_rect(fill = "grey95")) +
+  xlab(expression("Mixture Prior Distribution ("*rho*")")) +
+  ylab("")
+
+```
+
+# Priors plot (rho): right
+```{r}
+# sigma = 0.75; c_rho = 1000
+plot_sigma_75 <- hyp_rho(sigma_rho = 0.75, 
+                         c_rho = 100, 
+                         iter = 100000)
+# remove "spike"
+temp <- plot_sigma_75 %>% 
+        filter(k != 1)
+
+# "spike" component
+temp2 <- plot_sigma_75 %>% 
+         filter(k == 1)
+
+# dummy facet
+temp2$facet <- "a"
+
+# expression for facet
+temp2$facet <- factor(temp2$facet ,
+                      levels = "a", 
+                      labels = expression("("*sigma[rho]*"= 0.75,"*
+                                            italic(paste("  c"))[rho]*"= 100)"  ))
+# dummy plot: density
+p <- ggplot(temp, aes(r)) + 
+     geom_density()
+# density
+d <- ggplot_build(p)$data[[1]]
+
+plot_1B3 <- ggplot(temp2, aes(x = r)) +
+  facet_grid(~ facet, 
+             labeller = label_parsed) +
+  geom_density(fill = "#999999", 
+               alpha = 0.5) +
+  geom_area(inherit.aes = FALSE, 
+            data = subset(d, x > -0.005), 
+            aes(x=x, y=y), 
+            fill="#56B4E9", 
+            alpha = 0.5) +
+  geom_area(inherit.aes = FALSE, 
+            data = subset(d, x < 0.005), 
+            aes(x=x, y=y), 
+            fill="#009E73", 
+            alpha = 0.5) +
+  geom_density(inherit.aes = FALSE, 
+               data = temp, aes( x =r)) +
+  coord_cartesian(ylim=c(0, 3)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_x_continuous(expand = c(0, 0), 
+                     limits = c(-1, 1),
+                     breaks = c(-1, -0.5, 0, 0.5, 1), 
+                     labels = c(-1, -0.5, 0, 0.5, 1)) +
+  theme_bw(base_family = "Times", 
+           base_size = 12) +
+  theme(legend.position = "none", 
+        panel.grid = element_blank(), 
+        strip.text = element_text(size = 9), 
+        strip.background = element_rect(fill = "grey95")) +
+  xlab("") +
+  ylab("")
+```
+
+# Priors plot (SD): legend
+```{r}
+dummy_leg <- data.frame(group = rep(c("a", "b" ,"c"), each = 1) , 
+                        y = rnorm(3))
+
+# legend
+leg <- ggplot(dummy_leg, aes(x = group, 
+                             fill = group, 
+                             y=y)) +
+  geom_bar(stat = "identity", 
+           alpha= 0.5, 
+           color = "black") +
+  scale_fill_manual(name = "Component", 
+                    values = c("#999999", "#56B4E9", "#009E73"), 
+                    breaks = c("a", "b", 'c'), 
+                    labels = c("Null", "Positive", "Negative")) +
+   theme_bw(base_size = 12, 
+            base_family = "Times") +
+  theme(legend.position = "top")
+
+# legend
+leg <- get_legend(leg)
+```
+
+# Priors plot (rho): all
+```{r}
+plot_1B <- plot_grid(plot_1B1, plot_1B2, 
+                     plot_1B3, nrow = 1)
+plot_1B <- plot_grid(leg, plot_1B, nrow = 2, 
+                     rel_heights = c(1, 10))
+```
+
+# Prios plot: all
+```{r}
+plot_1 <- plot_grid(plot_1A, "" , plot_1B, 
+                    nrow = 3, rel_heights = c(1, 0.05, 1))
+
+save(plot_1, file = "plot_1.Rdata")
+```
